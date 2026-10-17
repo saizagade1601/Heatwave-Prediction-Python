@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HeatGuard AI</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23ff8a1f' stroke-width='5'/%3E%3Ccircle cx='32' cy='32' r='15' fill='%23ff8a1f'/%3E%3Cpath d='M32 22 L41 38 L23 38Z' fill='%23e8231b'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-theme="solar">
+  <!-- ============ splash while the Python back end loads the data ============ -->
+  <div id="splash">
+    <div class="splash-box">
+      <svg class="logo spin" viewBox="0 0 100 100" width="120" height="120" aria-hidden="true">
+        <circle cx="50" cy="50" r="44" class="ring"/>
+        <g class="rays"></g>
+        <circle cx="50" cy="50" r="21" class="core"/>
+        <path d="M50 37 L62 58 L38 58Z" fill="#e8231b"/><text x="50" y="55" text-anchor="middle" class="bang">!</text>
+      </svg>
+      <h1>HEATGUARD AI</h1>
+      <p>Climate Intelligence for Heatwave Monitoring, Prediction &amp; Early Warning</p>
+      <div class="bar"><span id="splash-fill"></span></div>
+      <small id="splash-msg">Connecting to the Python server...</small>
+    </div>
+  </div>
+
+  <!-- ================================ header ================================= -->
+  <header id="banner">
+    <canvas id="particles"></canvas>
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 100 100" width="54" height="54" aria-hidden="true">
+        <circle cx="50" cy="50" r="44" class="ring"/>
+        <g class="rays"></g>
+        <circle cx="50" cy="50" r="21" class="core"/>
+        <path d="M50 37 L62 58 L38 58Z" fill="#e8231b"/>
+      </svg>
+      <div>
+        <div class="title">HEATGUARD AI</div>
+        <div class="subtitle">Climate Intelligence for Heatwave Monitoring, Prediction &amp; Early Warning &nbsp;•&nbsp; KJS-CES-01</div>
+      </div>
+    </div>
+    <div class="mode">
+      <div id="mode-name">☀ SOLAR MODE</div>
+      <div id="mode-reason">Warm baseline - monitoring</div>
+      <div id="clock"></div>
+    </div>
+  </header>
+
+  <!-- ================================ sidebar ================================ -->
+  <aside id="sidebar">
+    <div class="section-label">NAVIGATE</div>
+    <nav id="nav">
+      <a data-page="overview"><span>⌂</span>Command Center</a>
+      <a data-page="forecast"><span>↗</span>AI Forecast Lab</a>
+      <a data-page="sql"><span>⌨</span>SQL Lab</a>
+      <a data-page="analytics"><span>▦</span>Analytics</a>
+      <a data-page="alerts"><span>⚠</span>Alerts &amp; AWS</a>
+      <a data-page="project"><span>✦</span>Project &amp; Exps</a>
+    </nav>
+    <div class="section-label">REGION</div>
+    <select id="country"></select>
+    <div id="quick" class="quick"></div>
+    <div class="section-label">THEME</div>
+    <div id="swatches" class="swatches"></div>
+    <label class="auto"><input type="checkbox" id="auto-theme" checked> Auto theme (follows data)</label>
+    <div class="grow"></div>
+    <div id="data-info" class="data-info"></div>
+    <button id="stop-server" class="btn ghost small" title="Stops the Python server - close the tab afterwards">⏻ Stop server</button>
+  </aside>
+
+  <!-- ================================= pages ================================= -->
+  <main id="main">
+    <!-- COMMAND CENTER -->
+    <section class="page" id="page-overview">
+      <div class="page-head">
+        <h1 id="ov-title">India</h1><span id="ov-sub" class="muted"></span>
+        <div class="grow"></div><span class="tiny faint">OVERALL RISK</span><span id="ov-badge" class="badge"></span>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="ov-grid">
+        <div class="card"><div class="card-head"><h3>Live temperature</h3><span>latest station reading</span></div>
+          <div id="dial" class="chart dial"></div><div id="ov-normal" class="center small muted"></div></div>
+        <div class="card"><div class="card-head"><h3>Temperature trend</h3><span>last 180 days • hover for values</span></div>
+          <div id="ov-trend" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Risk matrix</h3><span>5 analyzers • polymorphism</span></div>
+          <div id="risk" class="risk"></div></div>
+      </div>
+      <div class="card outlook">
+        <div class="card-head"><h3>AI 7-day outlook</h3><span>ensemble model • temperature, rain chance, risk</span>
+          <div class="grow"></div><button class="btn ghost small" data-goto="forecast">Open Forecast Lab →</button></div>
+        <div class="outlook-row"><div id="days" class="days"></div>
+          <div class="outlook-text"><h3 id="ol-head">AI model is training...</h3><p id="ol-text" class="small muted"></p></div></div>
+      </div>
+    </section>
+
+    <!-- FORECAST -->
+    <section class="page" id="page-forecast">
+      <div class="page-head">
+        <h1 id="fc-title">AI Forecast Lab</h1>
+        <span class="tiny faint">HORIZON</span><div class="seg" id="fc-horizon"></div>
+        <span class="tiny faint">MODEL</span><div class="seg" id="fc-model"></div>
+        <div class="grow"></div><span id="fc-spin" class="spinner hidden"></span>
+        <button class="btn" id="fc-run">▶ Run forecast</button>
+      </div>
+      <div class="advisory" id="fc-adv"><span class="adv-icon" id="fc-adv-icon">✔</span>
+        <div><h3 id="fc-head">Run the AI model to generate an early warning</h3><p id="fc-summary" class="small muted"></p></div></div>
+      <div class="fc-grid">
+        <div class="card span2"><div class="card-head"><h3>Temperature forecast</h3><span>observed (60 days) + AI forecast with 80% band</span></div><div id="fc-main" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Model accuracy</h3><span>backtest: hide last 30 days, predict them</span></div>
+          <table class="metrics" id="fc-metrics"></table><div id="fc-bt" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Chance of rain</h3><span>logistic regression • per day</span></div><div id="fc-rain" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Humidity forecast</h3><span>seasonal-trend model</span></div><div id="fc-hum" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Stakeholder advisory</h3><span>Phase V • who should do what</span></div>
+          <div class="seg small" id="fc-stake"></div><p id="fc-advice" class="advice"></p></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Day-by-day forecast messages</h3><span>click a row for details</span><div class="grow"></div>
+          <button class="btn ghost small" id="fc-save">✔ Save to database</button><button class="btn ghost small" id="fc-csv">⇩ Export CSV</button></div>
+        <div class="table-wrap short"><table class="data" id="fc-table"></table></div>
+      </div>
+    </section>
+
+    <!-- SQL LAB -->
+    <section class="page" id="page-sql">
+      <div class="page-head"><h1>SQL Lab</h1><span class="muted small">Experiment 8 • SQLite database climate.db • the theme reacts to your query</span></div>
+      <div class="sql-grid">
+        <div class="card library">
+          <div class="card-head"><h3>Query library</h3></div>
+          <div class="seg small" id="lib-tabs"></div>
+          <div id="lib-presets" class="lib-list"></div>
+          <div id="lib-schema" class="lib-list hidden"></div>
+          <div id="lib-history" class="lib-list hidden"></div>
+        </div>
+        <div class="sql-right">
+          <div class="card">
+            <div class="card-head"><h3>Query editor</h3><span>Ctrl+Enter to run • several statements separated by ;</span><div class="grow"></div>
+              <button class="btn" id="sql-run">▶ RUN QUERY</button><button class="btn ghost small" id="sql-clear">✕ Clear</button>
+              <button class="btn subtle small" id="sql-reset">↺ Reset database</button></div>
+            <div class="editor"><pre id="sql-hl" aria-hidden="true"></pre><textarea id="sql" spellcheck="false"></textarea></div>
+            <div class="sql-status"><span id="sql-msg" class="small muted">Pick a preset on the left or write your own SELECT.</span><span id="sql-chip" class="chip"></span></div>
+          </div>
+          <div class="sql-results">
+            <div class="card"><div class="card-head"><h3 id="res-title">Results</h3><span>double-click a row with a country to open it</span><div class="grow"></div><button class="btn ghost small" id="sql-csv">⇩ CSV</button></div>
+              <div class="table-wrap"><table class="data" id="sql-table"></table></div></div>
+            <div class="card"><div class="card-head"><h3>Auto chart</h3><span>built from your result</span></div><div id="sql-chart" class="chart"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section class="page" id="page-analytics">
+      <div class="page-head"><h1 id="an-title">Analytics</h1><div class="seg" id="an-mode"></div><span id="an-sub" class="muted small"></span></div>
+      <div class="chips" id="an-chips"></div>
+      <div class="an-grid" id="an-country">
+        <div class="card"><div class="card-head"><h3>Heat calendar</h3><span>average temperature by month and year</span></div><div id="an-cal" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Seasonal distribution</h3><span>4 IMD seasons • box + every reading</span></div><div id="an-season" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Wind rose</h3><span>direction frequency by speed</span></div><div id="an-rose" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>What moves together</h3><span>correlation of weather variables</span></div><div id="an-corr" class="chart"></div></div>
+      </div>
+      <div class="an-grid hidden" id="an-global">
+        <div class="card"><div class="card-head"><h3>Heatwave hotspots</h3><span>most readings ≥ 40°C, last 60 days</span></div><div id="an-hot" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>World heat band</h3><span>latest reading of every country by longitude • hover</span></div><div id="an-band" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Coldest regions</h3><span>lowest average temperature, last 60 days</span></div><div id="an-cold" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Global temperature pulse</h3><span>weekly mean of all countries</span></div><div id="an-pulse" class="chart"></div></div>
+      </div>
+    </section>
+
+    <!-- ALERTS & AWS -->
+    <section class="page" id="page-alerts">
+      <div class="page-head"><h1>Alerts &amp; IoT weather stations</h1><span id="mon-state" class="small faint">● monitor stopped</span></div>
+      <div class="card control">
+        <div class="card-head"><h3>Control room</h3><span>watch-list • thresholds • demo triggers</span></div>
+        <div class="control-row">
+          <div><div class="tiny faint">WATCH-LIST (Ctrl-click, max 6)</div><select id="watch" multiple size="6"></select></div>
+          <div><div class="tiny faint">ALERT THRESHOLDS (live)</div><div class="thresholds" id="thresholds"></div></div>
+          <div class="actions">
+            <div><button class="btn" id="mon-toggle">▶ Start AWS monitor</button><button class="btn ghost" id="mon-scan">⌕ Scan latest data</button></div>
+            <div class="tiny faint">DEMO TRIGGERS - inject into the selected region (or first station)</div>
+            <div><button class="btn ghost" data-inject="heat">♨ Heat spike</button><button class="btn ghost" data-inject="cold">❄ Cold snap</button><button class="btn ghost" data-inject="wind">≋ Wind gust</button></div>
+            <label class="auto"><input type="checkbox" id="popups" checked> Pop-up alerts</label>
+          </div>
+        </div>
+      </div>
+      <div class="al-grid">
+        <div class="card"><div class="card-head"><h3>Live sensor stream</h3><span>temperature thread • one line per station</span></div><div id="al-live" class="chart"></div></div>
+        <div class="card"><div class="card-head"><h3>Station status</h3><span>latest value from each sensor thread</span></div>
+          <div class="table-wrap"><table class="data" id="al-stations"></table></div><div id="al-stats" class="tiny faint"></div></div>
+        <div class="card"><div class="card-head"><h3>Event feed</h3><span>readings, faults (exceptions) and alerts</span></div><pre id="al-feed" class="feed"></pre></div>
+        <div class="card"><div class="card-head"><h3>Alert log</h3><span>SQLite table: alerts</span></div><div class="table-wrap"><table class="data" id="al-log"></table></div></div>
+      </div>
+    </section>
+
+    <!-- PROJECT -->
+    <section class="page" id="page-project">
+      <div class="card hero">
+        <svg class="logo spin" viewBox="0 0 100 100" width="120" height="120" aria-hidden="true"><circle cx="50" cy="50" r="44" class="ring"/><g class="rays"></g><circle cx="50" cy="50" r="21" class="core"/><path d="M50 37 L62 58 L38 58Z" fill="#e8231b"/></svg>
+        <div class="grow"><h1 class="hero-title">HeatGuard AI</h1><div id="pj-usecase" class="accent2"></div>
+          <p class="small muted">Python mini project: a database-driven web dashboard (Flask back end + HTML/JS front end) that monitors, forecasts and warns about heatwaves.</p></div>
+        <table class="student" id="pj-student"></table>
+      </div>
+      <div class="section-title">HOW THE USE CASE MAPS TO THE DASHBOARD</div><div class="phases" id="pj-phases"></div>
+      <div class="section-title">EXPERIMENTS 1-8 INSIDE THIS PROJECT</div><div class="exps" id="pj-exps"></div>
+      <div class="two">
+        <div class="card"><div class="card-head"><h3>Viva demo script</h3><span>6 steps, about 3 minutes</span></div><ol id="pj-demo" class="small"></ol></div>
+        <div class="card"><div class="card-head"><h3>Data cleaning report</h3><span>Phase I</span></div><pre id="pj-clean" class="mono small muted"></pre></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="status"><span id="status-msg">Ready</span><span class="faint">● SQLite connected • database/climate.db • Python Flask server on localhost:5000</span></footer>
+
+  <div id="toasts"></div>
+  <div id="modal" class="hidden"></div>
+  <div id="tooltip" class="tooltip hidden"></div>
+
+  <script src="/static/d3.min.js"></script>
+  <script src="/static/charts.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
